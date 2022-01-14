@@ -63,4 +63,26 @@ defmodule EctoTechniques.Products do
         select: %{chars: fragment("length(?)", p.name), product_name: p.name}
         Repo.all(query)
     end
+
+    def get_products_using_distinct do
+        query = from p in Product,
+        distinct: true,
+        select: p.name
+        Repo.all(query)
+    end
+
+    def get_products_using_order_by do
+        query = from p in Product,
+        select: [name: p.name, price: p.price],
+        order_by: [desc: :name]
+        Repo.all(query)
+    end
+
+    def get_products_using_limit do
+        query = from p in Product,
+        select: [name: p.name, price: p.price],
+        order_by: [desc: :name],
+        limit: 3
+        Repo.all(query)
+    end
 end
