@@ -2,6 +2,7 @@ defmodule EctoTechniques.Products do
     alias EctoTechniques.{Product, Repo}
     import Ecto.Query, only: [from: 2]
     alias Ecto.Query
+    require Decimal
 
     def create_many_products(number \\ 5) do
         Enum.map(1..number, &build_product/1)
@@ -122,6 +123,28 @@ defmodule EctoTechniques.Products do
         select: p,
         limit: 10,
         where: p.price in subquery(from sqp in Product, select: min(sqp.price))
+        Repo.all(query)
+    end
+
+    def advanced_query do
+        query = from p in Product,
+        select: [name: p.name, category: p.category, price: p.price],
+        group_by: [:name, :category, :price],
+        order_by: [:name],
+        limit: 10
+        Repo.all(query)
+    end
+
+    def using_sum do
+        query = from p in Product,
+        select: [total: sum(p.price)]
+        Repo.all(query)
+    end
+
+    def using_avg do
+        query = from p in Product,
+        select: [name: p.name, average: fragment("round(avg(?), 2)", p.price)],
+        group_by: [:name, :price]
         Repo.all(query)
     end
 end
