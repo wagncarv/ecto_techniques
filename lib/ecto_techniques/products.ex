@@ -51,4 +51,16 @@ defmodule EctoTechniques.Products do
         select: fragment("reverse(upper(?))", p.name)
         Repo.all(query)
     end
+
+    def get_products_using_upper_concat do
+        query = from p in Product,
+        select: fragment("upper(concat(?, ' ', ?))", p.name, p.price)
+        Repo.all(query)
+    end
+
+    def get_products_using_length do
+        query = from p in Product,
+        select: %{chars: fragment("length(?)", p.name), product_name: p.name}
+        Repo.all(query)
+    end
 end
